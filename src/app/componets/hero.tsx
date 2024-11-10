@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import images from "@/app/public/businessman-with-laptop-grey-background-3d-illustration-cartoon-character (1).png"
 import { TypeAnimation } from "react-type-animation";
-
 export default function HeroSection(){
   return (
     <section className="lg:py-16">
@@ -39,14 +38,14 @@ export default function HeroSection(){
             >
               Hire Me
             </Link>
-            <Link
-              href={"/public/Alyancv.pdf"}
+            <a
+              href={"/alyancv.pdf"}
               className="px-1 inline-block py-1 w-[80%] sm:w-fit rounded-full bg-gradient-to-br from-slate-500 via-blue-500 to-red-600 hover:bg-slate-800 text-white mt-3"
-            download={"/public/Alyancv.pdf"}>
+            download={"CV Downloaded"}>
               <span className="block bg-[#121212] border-[1px] border-wite hover:bg-slate-800 rounded-full px-3 md:px-10 py-3 md:py-4 ">
                 Download CV
               </span>
-            </Link>
+            </a>
           </div>
         </div>
         <div
