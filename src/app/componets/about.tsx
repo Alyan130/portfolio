@@ -48,7 +48,7 @@ const TAB_DATA: TabData[] = [
 
 export const AboutSection = () => {
   const [tab, setTab] = useState<string>("skills");
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
 
 
   const handleTabChange = (id: string) => {
