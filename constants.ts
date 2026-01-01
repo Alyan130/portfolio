@@ -45,7 +45,7 @@ export const PROJECTS: Project[] = [
   {
     title: "Lead Generation CRM",
     category: "Automation & Scraping",
-    imageUrl: "https://qygyhb50bt.ufs.sh/f/YxSUBdKLte16ZNda5CQDwghx589E04LXRd6CbpaUGoBy1AIZ",
+    imageUrl: "https://qygyhb50bt.ufs.sh/f/YxSUBdKLte16VdH09GvW9xAr5HeoI1YKEGf3wRLnFh8XsigP",
     link: "#",
     keyFeatures: [
       "Automatically scrapes all leads from different platforms",
@@ -107,7 +107,7 @@ export const EXPERIENCE: Experience[] = [
     company: "Barq Digital",
     role: "Automation Developer",
     location: "Karachi, Pakistan",
-    period: "Oct 2022 – Present",
+    period: "Aug 2025 – Present",
     description: [
       "Building workflows and agents using modern AI tools.",
       "Developed content automation systems, RAG systems, voice AI agents and Dashboards using Lovable.",
