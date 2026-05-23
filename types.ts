@@ -2,12 +2,13 @@ import { LucideIcon } from "lucide-react";
 
 export interface Project {
   title: string;
-  category: string;
+  category: 'Automation' | 'Custom Built';
   imageUrl: string;
   link: string;
-  keyFeatures?: string[];
-  impact?: string;
-  techStack?: string[];
+  problem: string;
+  whatIBuilt: string[];
+  outcome: string;
+  techStack: string[];
 }
 
 export interface Experience {

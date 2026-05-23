@@ -17,7 +17,6 @@ import {
   PROJECTS, 
   EXPERIENCE, 
   EDUCATION, 
-  CERTIFICATIONS, 
   STACK, 
   AWARDS, 
   RECOMMENDATIONS, 
@@ -26,29 +25,26 @@ import {
 import { Project } from './types';
 
 const ProjectCard: React.FC<{ project: Project; onSelect: (project: Project) => void }> = ({ project, onSelect }) => (
-  <div className="group block bg-card rounded-xl overflow-hidden border border-border hover:border-zinc-600 transition-colors flex flex-col h-full">
-    <div className="aspect-[4/3] bg-zinc-800 relative overflow-hidden shrink-0">
-      <img src={project.imageUrl} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-      <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+  <div className="group block bg-card rounded-xl overflow-hidden border border-border hover:border-zinc-800 hover:bg-zinc-900/10 transition-all duration-300 flex flex-col h-full">
+    <div className="aspect-[16/10] bg-zinc-800 relative overflow-hidden shrink-0">
+      <img src={project.imageUrl} alt={project.title} className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500" />
+      <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity" />
     </div>
-    <div className="p-4 sm:p-5 flex flex-col flex-grow">
-      <div className="flex items-start justify-between mb-4">
+    <div className="p-3.5 sm:p-4 flex flex-col flex-grow justify-between">
+      <div className="flex items-start justify-between mb-3">
         <div className="pr-2">
-          <h3 className="font-medium text-base sm:text-lg text-primary">{project.title}</h3>
-          <p className="text-xs sm:text-sm text-secondary mt-0.5">{project.category}</p>
+          <h3 className="font-medium text-sm sm:text-base text-primary group-hover:text-white transition-colors line-clamp-1">{project.title}</h3>
+          <p className="text-[11px] sm:text-xs text-zinc-400 mt-0.5">{project.category}</p>
         </div>
-        <a href={project.link} className="text-tertiary hover:text-primary transition-colors p-1" aria-label="Open project">
-           <ArrowUpRight className="w-5 h-5" />
-        </a>
       </div>
       
-      <div className="mt-auto">
+      <div className="mt-1">
         <button 
           onClick={(e) => {
             e.preventDefault();
             onSelect(project);
           }}
-          className="w-full py-2 sm:py-2.5 px-4 bg-zinc-900 hover:bg-zinc-800 text-sm font-medium text-secondary hover:text-white rounded-lg transition-colors border border-border"
+          className="w-full py-1.5 sm:py-2 px-3 bg-zinc-900 hover:bg-zinc-800 text-xs font-semibold text-zinc-300 hover:text-white rounded-lg transition-all duration-200 border border-border/60 hover:border-zinc-700"
         >
           View Details
         </button>
@@ -57,10 +53,26 @@ const ProjectCard: React.FC<{ project: Project; onSelect: (project: Project) => 
   </div>
 );
 
+const HOME_PROJECT_TITLES = [
+  "Medicare Data Pipeline",
+  "Multi-tenant Podcast Content System",
+  "Logistics Operations System",
+  "HR Sales Recruitment Agent"
+];
+
 function App() {
   const [currentTime, setCurrentTime] = useState("");
   const [view, setView] = useState<'home' | 'projects'>('home');
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [projectTab, setProjectTab] = useState<'automation' | 'custom'>('automation');
+
+  const homeProjects = HOME_PROJECT_TITLES.map(title => 
+    PROJECTS.find(p => p.title.toLowerCase() === title.toLowerCase())
+  ).filter((p): p is Project => p !== undefined);
+
+  const filteredAllProjects = PROJECTS.filter(project => {
+    return project.category === (projectTab === 'automation' ? 'Automation' : 'Custom Built');
+  });
 
   useEffect(() => {
     const updateTime = () => {
@@ -104,83 +116,85 @@ function App() {
     <div className="min-h-screen bg-background text-primary selection:bg-zinc-800 selection:text-white font-sans overflow-x-hidden">
       {/* Project Modal */}
       {selectedProject && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 text-primary">
           <div 
-            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/85 backdrop-blur-sm"
             onClick={() => setSelectedProject(null)}
           ></div>
-          <div className="relative w-full max-w-2xl bg-card border border-border rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="absolute top-4 right-4 z-10">
+          <div className="relative w-full max-w-2xl bg-card border border-border rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh] sm:max-h-[85vh]">
+            <div className="absolute top-5 right-5 z-10">
               <button 
                 onClick={() => setSelectedProject(null)}
-                className="p-2 bg-black/50 hover:bg-black/70 rounded-full text-white backdrop-blur-md transition-colors"
+                className="p-1.5 bg-zinc-900 hover:bg-zinc-800 rounded-lg text-secondary hover:text-white transition-colors border border-border/60"
                 aria-label="Close details"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4.5 h-4.5" />
               </button>
             </div>
             
-            <div className="h-40 sm:h-64 bg-zinc-800 shrink-0 relative">
-              <img 
-                src={selectedProject.imageUrl} 
-                alt={selectedProject.title} 
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent"></div>
-              <div className="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-6">
-                <h2 className="text-xl sm:text-3xl font-bold text-white leading-tight">{selectedProject.title}</h2>
-                <p className="text-secondary text-sm sm:text-base mt-1">{selectedProject.category}</p>
+            {/* Header Content */}
+            <div className="p-5 sm:p-6 border-b border-border/50 shrink-0 select-none">
+              <div className="flex flex-col items-start gap-2 pr-10">
+                <span className="text-[10px] font-semibold text-zinc-400 uppercase tracking-widest bg-zinc-900 border border-border px-3 py-1 rounded-full">
+                  {selectedProject.category}
+                </span>
+                <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">{selectedProject.title}</h2>
               </div>
             </div>
 
-            <div className="p-4 sm:p-6 overflow-y-auto custom-scrollbar space-y-6 sm:space-y-8 pb-8">
-              {/* Key Features */}
-              {selectedProject.keyFeatures && (
-                <div>
-                  <h3 className="text-xs font-semibold text-tertiary uppercase tracking-wider mb-3 flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4" /> Key Features
-                  </h3>
-                  <ul className="grid grid-cols-1 gap-2.5">
-                    {selectedProject.keyFeatures.map((feature, idx) => (
-                      <li key={idx} className="flex items-start gap-3 text-secondary text-sm sm:text-base">
-                        <span className="w-1.5 h-1.5 rounded-full bg-zinc-600 mt-2 shrink-0"></span>
-                        <span className="leading-relaxed">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
+            {/* Scrollable details view */}
+            <div className="p-5 sm:p-6 overflow-y-auto custom-scrollbar space-y-6 sm:space-y-8 pb-8">
+              {/* Problem */}
+              <div className="space-y-2">
+                <h3 className="text-xs font-bold text-white uppercase tracking-widest px-0.5">
+                  Problem
+                </h3>
+                <div className="p-4 bg-zinc-900/30 rounded-xl border border-border/80 text-secondary text-sm sm:text-base leading-relaxed">
+                  {selectedProject.problem}
                 </div>
-              )}
+              </div>
 
-              {/* Impact */}
-              {selectedProject.impact && (
-                <div>
-                  <h3 className="text-xs font-semibold text-tertiary uppercase tracking-wider mb-3">Impact</h3>
-                  <div className="p-3 sm:p-4 bg-zinc-900/50 rounded-lg border border-border">
-                    <p className="text-secondary text-sm sm:text-base leading-relaxed">
-                      {selectedProject.impact}
-                    </p>
-                  </div>
-                </div>
-              )}
+              {/* What I Built */}
+              <div className="space-y-3">
+                <h3 className="text-xs font-bold text-white uppercase tracking-widest px-0.5">
+                  What I Built
+                </h3>
+                <ul className="grid grid-cols-1 gap-2.5">
+                  {selectedProject.whatIBuilt.map((feature, idx) => (
+                    <li key={idx} className="flex items-start gap-3 text-secondary text-sm sm:text-base">
+                      <span className="w-1.5 h-1.5 rounded-full bg-zinc-500 mt-2 shrink-0"></span>
+                      <span className="leading-relaxed">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
-              {/* Tech Stack */}
-              {selectedProject.techStack && (
-                <div>
-                  <h3 className="text-xs font-semibold text-tertiary uppercase tracking-wider mb-3 flex items-center gap-2">
-                    <Cpu className="w-4 h-4" /> Tech Stack
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedProject.techStack.map((tech, idx) => (
-                      <span 
-                        key={idx} 
-                        className="px-2.5 py-1 bg-zinc-900 border border-border rounded-full text-xs sm:text-sm text-secondary"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
+              {/* Outcome */}
+              <div className="space-y-2">
+                <h3 className="text-xs font-bold text-white uppercase tracking-widest px-0.5">
+                  Outcome
+                </h3>
+                <div className="p-4 bg-zinc-900/30 rounded-xl border border-border/80 text-secondary text-sm sm:text-base leading-relaxed">
+                  {selectedProject.outcome}
                 </div>
-              )}
+              </div>
+
+              {/* Tech Stack Tools */}
+              <div className="space-y-3">
+                <h3 className="text-xs font-bold text-white uppercase tracking-widest px-0.5">
+                  Tools
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {selectedProject.techStack.map((tech, idx) => (
+                    <span 
+                      key={idx} 
+                      className="px-3 py-1.5 bg-zinc-900 border border-border rounded-lg text-xs sm:text-sm font-medium text-zinc-300 hover:text-white hover:border-zinc-500 transition-colors cursor-default select-none"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -196,13 +210,37 @@ function App() {
             <span>Back to Home</span>
           </button>
           
-          <div className="flex flex-col gap-2 mb-4">
+          <div className="flex flex-col gap-2 mb-2">
             <h1 className="text-2xl sm:text-4xl font-semibold tracking-tight">All Projects</h1>
             <p className="text-base sm:text-lg text-secondary">A collection of my work in automation and AI solutions.</p>
           </div>
 
+          {/* Tab Buttons as chips */}
+          <div className="flex flex-wrap gap-2.5 mb-6">
+            <button 
+              onClick={() => setProjectTab('automation')}
+              className={`px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-full transition-all duration-200 border ${
+                projectTab === 'automation' 
+                  ? 'bg-zinc-100 text-zinc-950 border-zinc-100 hover:bg-zinc-200' 
+                  : 'bg-zinc-900/40 text-zinc-400 border-border/60 hover:text-white hover:border-zinc-700'
+              }`}
+            >
+              Automation
+            </button>
+            <button 
+              onClick={() => setProjectTab('custom')}
+              className={`px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-full transition-all duration-200 border ${
+                projectTab === 'custom' 
+                  ? 'bg-zinc-100 text-zinc-950 border-zinc-100 hover:bg-zinc-200' 
+                  : 'bg-zinc-900/40 text-zinc-400 border-border/60 hover:text-white hover:border-zinc-700'
+              }`}
+            >
+              Custom Built
+            </button>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {PROJECTS.map((project, index) => (
+            {filteredAllProjects.map((project, index) => (
               <ProjectCard key={index} project={project} onSelect={setSelectedProject} />
             ))}
           </div>
@@ -223,7 +261,7 @@ function App() {
                 </div>
                 <div className="flex flex-col gap-1">
                   <h1 className="text-2xl sm:text-4xl font-semibold tracking-tight">Alyan Ali</h1>
-                  <p className="text-base sm:text-lg text-secondary">AI Solutions Architect</p>
+                  <p className="text-base sm:text-lg text-secondary">AI Engineer</p>
                   <div className="flex items-center justify-center sm:justify-start gap-1.5 text-sm text-secondary mt-1">
                     <MapPin className="w-4 h-4" />
                     <span>Karachi, Pakistan</span>
@@ -244,13 +282,13 @@ function App() {
                   <span>Contact Me</span>
                 </button>
                 <a 
-                  href="https://qygyhb50bt.ufs.sh/f/YxSUBdKLte16jHcK4PecA6VPeOZS1UEfQK8ig5qTnDyX3wMk" 
+                  href="https://drive.google.com/file/d/1sUXnZ6nMn21eDMYRCprIZIt_LsZZUykR/view?usp=drivesdk" 
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex flex-1 md:flex-none items-center justify-center md:justify-start gap-2 text-sm text-secondary hover:text-white transition-colors p-2 bg-zinc-900 md:bg-transparent border border-border md:border-none rounded-lg"
                 >
                   <Download className="w-4 h-4" />
-                  <span>Download CV</span>
+                  <span>Download Resume</span>
                 </a>
               </div>
             </div>
@@ -282,10 +320,7 @@ function App() {
             <h2 className="text-lg sm:text-xl font-medium mb-4">About me</h2>
             <div className="text-secondary text-base sm:text-lg leading-relaxed space-y-4">
               <p>
-                Automation specialist focused on solving real business problems with no-code platforms like n8n and Make.com.
-              </p>
-              <p>
-                Expert in prompt engineering and using LLMs to enhance productivity across teams. My skills not only lie in building the systems but to understand and optimize them.
+                I build practical AI systems and automations that helps you save time, improve operations, and scale efficiently.
               </p>
             </div>
           </section>
@@ -293,7 +328,7 @@ function App() {
           {/* Projects */}
           {PROJECTS.length > 0 && (
             <section>
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg sm:text-xl font-medium">Recent Projects</h2>
                 <button 
                   onClick={() => setView('projects')}
@@ -302,8 +337,9 @@ function App() {
                   View all <ArrowUpRight className="w-4 h-4" />
                 </button>
               </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {PROJECTS.slice(0, 4).map((project, index) => (
+                {homeProjects.map((project, index) => (
                   <ProjectCard key={index} project={project} onSelect={setSelectedProject} />
                 ))}
               </div>
@@ -352,26 +388,6 @@ function App() {
                       <span className="text-xs text-tertiary font-mono sm:pt-1">{edu.period}</span>
                     </div>
                     <p className="text-sm sm:text-base text-secondary">{edu.description}</p>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* Certifications */}
-          {CERTIFICATIONS.length > 0 && (
-            <section>
-              <h2 className="text-lg sm:text-xl font-medium mb-6">Certifications</h2>
-              <div className="flex flex-col divide-y divide-border border-t border-b border-border">
-                {CERTIFICATIONS.map((cert, index) => (
-                  <div key={index} className="py-5 flex items-center justify-between group gap-4">
-                    <div>
-                      <h3 className="text-sm sm:text-base font-medium text-primary leading-tight">{cert.name}</h3>
-                      <p className="text-xs sm:text-sm text-secondary mt-1">{cert.organization}, {cert.year}</p>
-                    </div>
-                    <a href={cert.link} className="text-xs sm:text-sm text-secondary hover:text-white flex items-center gap-1 transition-colors shrink-0" aria-label={`View ${cert.name}`}>
-                      <span className="hidden sm:inline">View</span> <ArrowUpRight className="w-4 h-4" />
-                    </a>
                   </div>
                 ))}
               </div>
@@ -472,7 +488,6 @@ function App() {
           {/* Footer */}
           <footer className="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs sm:text-sm text-tertiary pt-8 border-t border-border mb-8">
             <p>© Copyright 2025 Alyan Ali</p>
-            <p className="flex items-center gap-1">Built with React & AI</p>
           </footer>
 
         </div>
